@@ -1,4 +1,4 @@
-from aws_cdk import core
+from aws_cdk import RemovalPolicy, Stack
 from aws_cdk.aws_appsync import (
     CfnGraphQLSchema,
     CfnGraphQLApi,
@@ -18,11 +18,12 @@ from aws_cdk.aws_iam import (
     ServicePrincipal,
     ManagedPolicy
 )
+from constructs import Construct
 
 
-class AppSyncCdkStack(core.Stack):
+class AppSyncCdkStack(Stack):
 
-    def __init__(self, scope: core.Construct, id: str, **kwargs) -> None:
+    def __init__(self, scope: Construct, id: str, **kwargs) -> None:
         super().__init__(scope, id, **kwargs)
 
         table_name = 'items'
@@ -79,7 +80,7 @@ class AppSyncCdkStack(core.Stack):
             # remain in your account until manually deleted. By setting the
             # policy to DESTROY, cdk destroy will delete the table (even if it
             # has data in it)
-            removal_policy=core.RemovalPolicy.DESTROY # NOT recommended for production code
+            removal_policy=RemovalPolicy.DESTROY  # NOT recommended for production code
         )
 
         items_table_role = Role(
@@ -122,7 +123,8 @@ class AppSyncCdkStack(core.Stack):
             response_mapping_template="$util.toJson($ctx.result)"
         )
 
-        get_one_resolver.add_depends_on(api_schema)
+        get_one_resolver.add_dependency(api_schema)
+        get_one_resolver.add_dependency(data_source)
 
         get_all_resolver = CfnResolver(
             self, 'GetAllQueryResolver',
@@ -140,7 +142,8 @@ class AppSyncCdkStack(core.Stack):
             response_mapping_template="$util.toJson($ctx.result)"
         )
 
-        get_all_resolver.add_depends_on(api_schema)
+        get_all_resolver.add_dependency(api_schema)
+        get_all_resolver.add_dependency(data_source)
 
         save_resolver = CfnResolver(
             self, 'SaveMutationResolver',
@@ -162,7 +165,8 @@ class AppSyncCdkStack(core.Stack):
             response_mapping_template="$util.toJson($ctx.result)"
         )
 
-        save_resolver.add_depends_on(api_schema)
+        save_resolver.add_dependency(api_schema)
+        save_resolver.add_dependency(data_source)
 
         delete_resolver = CfnResolver(
             self, 'DeleteMutationResolver',
@@ -181,4 +185,5 @@ class AppSyncCdkStack(core.Stack):
             response_mapping_template="$util.toJson($ctx.result)"
         )
 
-        delete_resolver.add_depends_on(api_schema)
+        delete_resolver.add_dependency(api_schema)
+        delete_resolver.add_dependency(data_source)

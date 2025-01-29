@@ -1,8 +1,9 @@
-import { LambdaIntegration, MethodLoggingLevel, RestApi } from "@aws-cdk/aws-apigateway"
-import { PolicyStatement } from "@aws-cdk/aws-iam"
-import { Function, Runtime, AssetCode, Code } from "@aws-cdk/aws-lambda"
-import { Construct, Duration, Stack, StackProps } from "@aws-cdk/core"
-import s3 = require("@aws-cdk/aws-s3")
+import { LambdaIntegration, MethodLoggingLevel, RestApi } from "aws-cdk-lib/aws-apigateway"
+import { PolicyStatement } from "aws-cdk-lib/aws-iam"
+import { Function, Runtime, AssetCode, Code } from "aws-cdk-lib/aws-lambda"
+import { Duration, Stack, StackProps } from "aws-cdk-lib"
+import s3 = require("aws-cdk-lib/aws-s3")
+import { Construct } from "constructs"
 
 interface LambdaApiStackProps extends StackProps {
     functionName: string
@@ -29,20 +30,22 @@ export class CDKExampleLambdaApiStack extends Stack {
 
         const lambdaPolicy = new PolicyStatement()
         lambdaPolicy.addActions("s3:ListBucket")
+        lambdaPolicy.addActions("s3:getBucketLocation")
         lambdaPolicy.addResources(this.bucket.bucketArn)
 
         this.lambdaFunction = new Function(this, props.functionName, {
             functionName: props.functionName,
             handler: "handler.handler",
-            runtime: Runtime.NODEJS_10_X,
+            runtime: Runtime.NODEJS_18_X,
             code: new AssetCode(`./src`),
             memorySize: 512,
             timeout: Duration.seconds(10),
             environment: {
                 BUCKET: this.bucket.bucketName,
             },
-            initialPolicy: [lambdaPolicy],
         })
+
+        this.lambdaFunction.addToRolePolicy(lambdaPolicy)
 
         this.restApi.root.addMethod("GET", new LambdaIntegration(this.lambdaFunction, {}))
     }

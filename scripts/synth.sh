@@ -1,5 +1,5 @@
 #!/bin/bash
-set -euo pipefail
+set -euxo pipefail
 scriptdir=$(cd $(dirname $0) && pwd)
 
 export AWS_DEFAULT_REGION="us-east-1"
@@ -17,4 +17,3 @@ npx cdk synth
 if $fake_context; then
   rm -f cdk.context.json
 fi
-

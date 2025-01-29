@@ -6,12 +6,12 @@
 
 > **This is a stable example. It should successfully build out of the box**
 >
-> This examples does is built on Construct Libraries marked "Stable" and does not have any infrastructure prerequisites to build.
+> This examples is built on Construct Libraries marked "Stable" and does not have any infrastructure prerequisites to build.
 
 ---
 <!--END STABILITY BANNER-->
 
-This example creates an AutoScalingGroup (containing a Micro-T2 EC2 machine running the Amazon Linux AMI), and a ClassicLoadBalancer inside a shared VPC. It hooks up an open listener from the Load Balancer to the Scaling Group to indicate how many targets to balance between.
+This example creates an AutoScalingGroup (containing a AWS Graviton2 Micro-T4G EC2 machine running the Amazon Linux 2023 AMI), and a ClassicLoadBalancer inside a shared VPC. It hooks up an open listener from the Load Balancer to the Scaling Group to indicate how many targets to balance between.
 
 For more info on using Auto Scaling with Load Balancing see the AutoScaling guide [here](https://docs.aws.amazon.com/autoscaling/ec2/userguide/autoscaling-load-balancer.html).
 

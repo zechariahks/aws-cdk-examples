@@ -1,7 +1,7 @@
-import ec2 = require('@aws-cdk/aws-ec2');
-import ecs = require('@aws-cdk/aws-ecs');
-import ecs_patterns = require('@aws-cdk/aws-ecs-patterns');
-import cdk = require('@aws-cdk/core');
+import ec2 = require('aws-cdk-lib/aws-ec2');
+import ecs = require('aws-cdk-lib/aws-ecs');
+import ecs_patterns = require('aws-cdk-lib/aws-ecs-patterns');
+import cdk = require('aws-cdk-lib');
 
 /**
  * The port range to open up for dynamic port mapping
@@ -19,7 +19,7 @@ class BonjourECS extends cdk.Stack {
     const vpc = new ec2.Vpc(this, 'MyVpc', { maxAzs: 2 });
     const cluster = new ecs.Cluster(this, 'Ec2Cluster', { vpc });
     cluster.addCapacity('DefaultAutoScalingGroup', {
-      instanceType: ec2.InstanceType.of(ec2.InstanceClass.T2, ec2.InstanceSize.MICRO)
+      instanceType: ec2.InstanceType.of(ec2.InstanceClass.BURSTABLE3, ec2.InstanceSize.MICRO)
     });
 
     // Instantiate ECS Service with just cluster and image
@@ -34,6 +34,11 @@ class BonjourECS extends cdk.Stack {
     // Need target security group to allow all inbound traffic for
     // ephemeral port range (when host port is 0).
     ecsService.service.connections.allowFromAnyIpv4(EPHEMERAL_PORT_RANGE);
+
+    new cdk.CfnOutput(this, "networkLoadBalancerURL", {
+      value: "https://"+ecsService.loadBalancer.loadBalancerDnsName,
+      description: "Network LoadBalancer URL"
+    });
   }
 }
 

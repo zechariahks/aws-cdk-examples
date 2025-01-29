@@ -1,17 +1,17 @@
-import ecs = require('@aws-cdk/aws-ecs');
-import ec2 = require('@aws-cdk/aws-ec2');
-import elbv2 = require('@aws-cdk/aws-elasticloadbalancingv2');
-import cdk = require('@aws-cdk/core');
+import ecs = require('aws-cdk-lib/aws-ecs');
+import ec2 = require('aws-cdk-lib/aws-ec2');
+import elbv2 = require('aws-cdk-lib/aws-elasticloadbalancingv2');
+import cdk = require('aws-cdk-lib');
 
 const app = new cdk.App();
-const stack = new cdk.Stack(app, 'aws-ecs-integ-ecs');
+const stack = new cdk.Stack(app, 'sample-aws-ecs-integ-ecs');
 
 // Create a cluster
 const vpc = new ec2.Vpc(stack, 'Vpc', { maxAzs: 2 });
 
 const cluster = new ecs.Cluster(stack, 'EcsCluster', { vpc });
 cluster.addCapacity('DefaultAutoScalingGroup', {
-  instanceType: ec2.InstanceType.of(ec2.InstanceClass.T2, ec2.InstanceSize.MICRO)
+  instanceType: ec2.InstanceType.of(ec2.InstanceClass.BURSTABLE3, ec2.InstanceSize.MICRO)
 });
 
 // Create Task Definition
@@ -42,7 +42,7 @@ const listener = lb.addListener('PublicListener', { port: 80, open: true });
 
 // Attach ALB to ECS Service
 listener.addTargets('ECS', {
-  port: 80,
+  port: 8080,
   targets: [service.loadBalancerTarget({
     containerName: 'web',
     containerPort: 80

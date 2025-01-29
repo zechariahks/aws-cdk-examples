@@ -11,20 +11,16 @@
     "watch": "tsc -w",
     "cdk": "cdk"
   },
-  "license": "MIT",
+  "license": "Apache-2.0",
   "devDependencies": {
     "@types/node": "10.17.0",
-    "typescript": "~3.7.2",
-    "ts-node": "^8.1.0",
-    "aws-cdk": "^1.18.0"
+    "aws-cdk": "*",
+    "typescript": "~5.1.6",
+    "ts-node": "^8.1.0"
   },
   "dependencies": {
-    "@aws-cdk/aws-appsync": "*",
-    "@aws-cdk/aws-iam": "*",
-    "@aws-cdk/aws-events": "*",
-    "@aws-cdk/aws-events-targets": "*",
-    "@aws-cdk/aws-lambda": "*",
-    "@aws-cdk/core": "*",
+    "aws-cdk-lib": "^2.0.0",
+    "constructs": "^10.0.0",
     "source-map-support": "^0.5.9"
   }
 }

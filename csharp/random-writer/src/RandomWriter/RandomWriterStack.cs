@@ -4,6 +4,7 @@ using Amazon.CDK.AWS.DynamoDB;
 using Amazon.CDK.AWS.Events;
 using Amazon.CDK.AWS.Events.Targets;
 using Amazon.CDK.AWS.Lambda;
+using Constructs;
 
 namespace RandomWriter
 {
@@ -39,7 +40,7 @@ namespace RandomWriter
 
             Function = new Function(this, "Lambda", new FunctionProps
             {
-                Runtime = Runtime.NODEJS_10_X,
+                Runtime = Runtime.NODEJS_20_X,
                 Handler = "index.handler",
                 Code = Code.FromAsset("src/RandomWriter/resources"),
                 Environment = new Dictionary<string, string>

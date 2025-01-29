@@ -13,17 +13,15 @@
     "name": "Aleksandar Simovic <alexander.simovic@gmail.com>",
     "url": "https://serverless.pub"
   },
-  "license": "MIT",
+  "license": "Apache-2.0",
   "devDependencies": {
     "@types/node": "*",
+    "aws-cdk": "*",
     "esbuild": "*",
-    "typescript": "^3.8"
+    "typescript": "~5.1.6"
   },
   "dependencies": {
-    "@aws-cdk/aws-apigateway": "*",
-    "@aws-cdk/aws-dynamodb": "*",
-    "@aws-cdk/aws-lambda": "*",
-    "@aws-cdk/core": "*",
-    "@aws-cdk/aws-lambda-nodejs": "*"
+    "aws-cdk-lib": "^2.0.0",
+    "constructs": "^10.0.0"
   }
 }

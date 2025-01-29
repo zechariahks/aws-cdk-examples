@@ -1,10 +1,11 @@
 
-import * as cdk from '@aws-cdk/core';
-import * as ec2 from '@aws-cdk/aws-ec2';
-import * as neptune from '@aws-cdk/aws-neptune';
+import * as cdk from 'aws-cdk-lib';
+import * as ec2 from 'aws-cdk-lib/aws-ec2';
+import * as neptune from '@aws-cdk/aws-neptune-alpha';
+import { Construct } from 'constructs';
 
 export class NeptuneWithVpcStack extends cdk.Stack {
-  constructor(scope: cdk.Construct, id: string, props?: cdk.StackProps) {
+  constructor(scope: Construct, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
 
     // Create VPC for use with Neptune
@@ -24,7 +25,7 @@ export class NeptuneWithVpcStack extends cdk.Stack {
       subnetConfiguration: [{
         cidrMask: 24,
         name: 'db',
-        subnetType: ec2.SubnetType.ISOLATED,
+        subnetType: ec2.SubnetType.PRIVATE_ISOLATED,
       }, {
         cidrMask: 24,
         name: 'dmz',
@@ -40,9 +41,9 @@ export class NeptuneWithVpcStack extends cdk.Stack {
     });
 
     // Get lists of Subnets by type
-    var neptunePublicSubnets = neptuneVpc.publicSubnets;
-    var neptunePrivateSubnets = neptuneVpc.privateSubnets;
-    var neptuneIsolatedSubnets = neptuneVpc.isolatedSubnets;
+    let neptunePublicSubnets = neptuneVpc.publicSubnets;
+    let neptunePrivateSubnets = neptuneVpc.privateSubnets;
+    let neptuneIsolatedSubnets = neptuneVpc.isolatedSubnets;
 
     // Create Subnet group list to be used with Neptune.
     const neptuneSubnets: ec2.SubnetSelection = { subnets: neptuneIsolatedSubnets };

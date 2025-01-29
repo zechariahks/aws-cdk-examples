@@ -1,4 +1,4 @@
-import { S3 } from "aws-sdk"
+import { S3 } from "@aws-sdk/client-s3"
 
 const bucketName = process.env.BUCKET!
 
@@ -7,12 +7,12 @@ const handler = async function (event: any, context: any) {
     const S3Client = new S3()
 
     try {
-        var method = event.httpMethod
+        let method = event.httpMethod
 
         if (method === "GET") {
             if (event.path === "/") {
-                const data = await S3Client.listObjectsV2({ Bucket: bucketName }).promise()
-                var body = {
+                const data = await S3Client.listObjectsV2({ Bucket: bucketName })
+                let body = {
                     widgets: data.Contents!.map(function (e) {
                         return e.Key
                     }),
@@ -32,7 +32,12 @@ const handler = async function (event: any, context: any) {
             body: "We only accept GET /",
         }
     } catch (error) {
-        const body = error.stack || JSON.stringify(error, null, 2)
+        let body
+        if (error instanceof Error) {
+            body = error.stack
+        } else {
+            body = JSON.stringify(error, null, 2)
+        }
         return {
             statusCode: 400,
             headers: {},

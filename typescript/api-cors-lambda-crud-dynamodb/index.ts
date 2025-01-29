@@ -1,8 +1,8 @@
-import { IResource, LambdaIntegration, MockIntegration, PassthroughBehavior, RestApi } from '@aws-cdk/aws-apigateway';
-import { AttributeType, Table } from '@aws-cdk/aws-dynamodb';
-import { Runtime } from '@aws-cdk/aws-lambda';
-import { App, Stack, RemovalPolicy } from '@aws-cdk/core';
-import { NodejsFunction, NodejsFunctionProps } from '@aws-cdk/aws-lambda-nodejs';
+import { IResource, LambdaIntegration, MockIntegration, PassthroughBehavior, RestApi } from 'aws-cdk-lib/aws-apigateway';
+import { AttributeType, Table } from 'aws-cdk-lib/aws-dynamodb';
+import { Runtime } from 'aws-cdk-lib/aws-lambda';
+import { App, Stack, RemovalPolicy } from 'aws-cdk-lib';
+import { NodejsFunction, NodejsFunctionProps } from 'aws-cdk-lib/aws-lambda-nodejs';
 import { join } from 'path'
 
 export class ApiLambdaCrudDynamoDBStack extends Stack {
@@ -35,7 +35,7 @@ export class ApiLambdaCrudDynamoDBStack extends Stack {
         PRIMARY_KEY: 'itemId',
         TABLE_NAME: dynamoTable.tableName,
       },
-      runtime: Runtime.NODEJS_14_X,
+      runtime: Runtime.NODEJS_20_X,
     }
 
     // Create a Lambda function for each of the CRUD operations
@@ -78,6 +78,8 @@ export class ApiLambdaCrudDynamoDBStack extends Stack {
     // Create an API Gateway resource for each of the CRUD operations
     const api = new RestApi(this, 'itemsApi', {
       restApiName: 'Items Service'
+      // In case you want to manage binary types, uncomment the following
+      // binaryMediaTypes: ["*/*"],
     });
 
     const items = api.root.addResource('items');
@@ -95,6 +97,8 @@ export class ApiLambdaCrudDynamoDBStack extends Stack {
 
 export function addCorsOptions(apiResource: IResource) {
   apiResource.addMethod('OPTIONS', new MockIntegration({
+    // In case you want to use binary media types, uncomment the following line
+    // contentHandling: ContentHandling.CONVERT_TO_TEXT,
     integrationResponses: [{
       statusCode: '200',
       responseParameters: {
@@ -104,6 +108,7 @@ export function addCorsOptions(apiResource: IResource) {
         'method.response.header.Access-Control-Allow-Methods': "'OPTIONS,GET,PUT,POST,DELETE'",
       },
     }],
+    // In case you want to use binary media types, comment out the following line
     passthroughBehavior: PassthroughBehavior.NEVER,
     requestTemplates: {
       "application/json": "{\"statusCode\": 200}"
